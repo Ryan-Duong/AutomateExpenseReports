@@ -63,22 +63,23 @@ with open(r'C:\Users\thech\Downloads\expensereport.csv', mode = 'r') as csvFile:
     with open(r'C:\Users\thech\Downloads\expensereport2.csv', mode = 'w', newline = '') as csvFile2:
         csvWriter = csv.writer(csvFile2, delimiter = ',', quotechar = '"')
        
-        for line in csvReader:
-            line[1] = line[1].replace('-', '')
-            csvWriter.writerow(line)
-            for key in DicOfGLs:
-                if key.find(line[2]):
-                    for SpecialKey in SpecialMerchants:
-                        if SpecialKey == key:
+        for key in DicOfGLs:
+            csvFile.seek(0)
+            for specialKey in SpecialMerchants:
+                for line in csvReader:
+                    if key in line[2]:
+                        if specialKey == key:
                             if float(line[1]) > 1000.00:
                                 line.append(DicOfGLs[key][1][0])
                                 line.append(DicOfGLs[key][1][1])
+                                line[1] = line[1].replace('-', '')
                                 csvWriter.writerow(line)
                             else:
                                 line.append(DicOfGLs[key][0][0])
                                 line.append(DicOfGLs[key][0][1])
+                                line[1] = line[1].replace('-', '')
                                 csvWriter.writerow(line)
-                        else:
-                            line.append(DicOfGLs[key][0])
-                            line.append(DicOfGLs[key][1])
-                            csvWriter.writerow(line)
+                        line.append(DicOfGLs[key][0])
+                        line.append(DicOfGLs[key][1])
+                        line[1] = line[1].replace('-', '')
+                        csvWriter.writerow(line)
