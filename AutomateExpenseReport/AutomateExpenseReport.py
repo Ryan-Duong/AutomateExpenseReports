@@ -1,4 +1,5 @@
 import csv
+from tkinter import *
 
 """Script to Automate expense reports by assigning general ledger codes and descriptions 
 as well as different codes depending on amounts based off merchants
@@ -19,8 +20,8 @@ DicOfGLs = {
     'APPLE': ['760.6500.00', 'IT SUPPLIES'],
     'APPLE STORE': ['760.6500.00', 'IT SUPPLIES'],
     'MICROCENTER': ['760.6500.00', 'IT SUPPLIES'],
-    'Amazon.com': ['760.6500.00', 'IT SUPPLIES'],
-    'AMZN MKTP US*': ['760.6500.00', 'IT SUPPLIES'],
+    'AMAZON.COM': ['760.6500.00', 'IT SUPPLIES'],
+    'AMZN': ['760.6500.00', 'IT SUPPLIES'],
     'B&H PHOTO': ['760.6500.00', 'IT SUPPLIES'],
     'TARGET': ['760.6500.00', 'IT SUPPLIES'],
     'WALMART': ['760.6500.00', 'IT SUPPLIES'],
@@ -36,9 +37,11 @@ DicOfGLs = {
     'J2 EFAX SERVICES': ['760.7100.00', 'SOFTWARE'],
     'GOOGLE': ['760.7100.00', 'SOFTWARE'],
     'ZOHO-MANAGEENGINE': ['760.7100.00', 'SOFTWARE'],
+    'TEAMVIEWER': ['760.7100.00', 'SOFTWARE'],
     '2CO.COM': ['760.7100.00', 'SOFTWARE'],
     'TRELLO.COM': ['760.7100.00', 'SOFTWARE'],
     'SYNC.COM': ['760.7100.00', 'SOFTWARE'],
+    'LSPACE.COM': ['760.5522.00', 'IT OTHER'],
     'AT&T': ['760.4530.00', 'TELEPHONE IT'],
     '8X8': ['450.4530.00', 'TELEPHONE DIST.'],
     'NEXVORTEX': ['800.4530.00', 'G&A PHONE'],
@@ -67,10 +70,9 @@ SpecialMerchants = [
     'WALMART'
     ]
 
-def LookForGLCode(line):
-
+def LookForGLCode(line: list) -> bool:
     for key in DicOfGLs:
-        if key in line[2]:
+        if key.upper() in line[2].upper():
             line.append(DicOfGLs[key][0])
             line.append(DicOfGLs[key][1])
             line[1] = line[1].replace('-', '')
@@ -78,27 +80,31 @@ def LookForGLCode(line):
             return True
     return False
 
-with open('expensereport.csv', mode = 'r') as csvFile:
-    csvReader = csv.reader(csvFile)
-
-    with open('expensereport2.csv', mode = 'w', newline = '') as csvFile2:
-        csvWriter = csv.writer(csvFile2, delimiter = ',')
-        
-        for line in csvReader:
+def IterateThroughCSV(csvReader,csvWriter):
+    for line in csvReader:
             if LookForGLCode(line) == False:
                 line[1] = line[1].replace('-', '')
                 csvWriter.writerow(line)
             else:
                 pass
 
-                        #if key in SpecialMerchants:
-                            #if float(line[1]) > 1000.00:
-                                #line.append(DicOfGLs[key][1][0])
-                                #line.append(DicOfGLs[key][1][1])
-                                #line[1] = line[1].replace('-', '')
-                                #csvWriter.writerow(line)
-                            #else:
-                                #line.append(DicOfGLs[key][0][0])
-                                #line.append(DicOfGLs[key][0][1])
-                                #line[1] = line[1].replace('-', '')
-                                #csvWriter.writerow(line)
+def OpenFile():
+    with open('expensereport.csv', mode = 'r') as csvFile:
+        csvReader = csv.reader(csvFile)
+
+def WriteToFile():
+    with open('expensereport2.csv', mode = 'w', newline = '') as csvFile2:
+        csvWriter = csv.writer(csvFile2, delimiter = ',')
+
+window = Tk()
+window.title('Expense Report Automation')
+window.geometry('1920x1080')
+lbl = Label(window, text = 'Welcome To My Automater For Your Expense Report', font = ('Arial Bold', 20))
+lbl.grid(column = 0, row = 0)
+
+btn = Button(window, text = 'Click Me')
+btn.grid(column = 0, row = 1)
+
+window.mainloop()
+
+        
