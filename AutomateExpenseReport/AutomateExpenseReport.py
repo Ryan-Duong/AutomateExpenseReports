@@ -1,5 +1,6 @@
 import csv
 from tkinter import *
+from tkinter.ttk import *
 
 """Script to Automate expense reports by assigning general ledger codes and descriptions 
 as well as different codes depending on amounts based off merchants
@@ -96,14 +97,21 @@ def WriteToFile():
     with open('expensereport2.csv', mode = 'w', newline = '') as csvFile2:
         csvWriter = csv.writer(csvFile2, delimiter = ',')
 
+def clicked():
+    lbl.configure(text = 'Please enter the file path')
+    txt = Entry(window,width=10)
+    txt.grid(column=1, row=0)
+
+#
 window = Tk()
 window.title('Expense Report Automation')
 window.geometry('1920x1080')
-lbl = Label(window, text = 'Welcome To My Automater For Your Expense Report', font = ('Arial Bold', 20))
+lbl = Label(window, text = 'Welcome To My Automater For Your Expense Report', font = ('Arial Bold', 15))
 lbl.grid(column = 0, row = 0)
+#
 
-btn = Button(window, text = 'Click Me')
-btn.grid(column = 0, row = 1)
+btn = Button(window, text = 'Click Me', command = clicked)
+btn.grid(column = 2, row = 1)
 
 window.mainloop()
 
