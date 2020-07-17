@@ -1,6 +1,7 @@
 import csv
-from tkinter import *
-from tkinter.ttk import *
+import os
+import tkinter as tk
+from tkinter import filedialog
 
 """Script to Automate expense reports by assigning general ledger codes and descriptions 
 as well as different codes depending on amounts based off merchants
@@ -15,7 +16,6 @@ as well as different codes depending on amounts based off merchants
     #'B&H PHOTO': {0: ['760.6500.00', 'IT SUPPLIES'], 1: ['760.7110.00', 'IT COMPUTER EXPENSE']},
     #'TARGET': {0: ['760.6500.00', 'IT SUPPLIES'], 1: ['760.7110.00', 'IT COMPUTER EXPENSE']},
     #'WALMART': {0: ['760.6500.00', 'IT SUPPLIES'], 1: ['760.7110.00', 'IT COMPUTER EXPENSE']},
-
 DicOfGLs = {
     'BESTBUY': ['760.6500.00', 'IT SUPPLIES'],
     'APPLE': ['760.6500.00', 'IT SUPPLIES'],
@@ -27,6 +27,7 @@ DicOfGLs = {
     'TARGET': ['760.6500.00', 'IT SUPPLIES'],
     'WALMART': ['760.6500.00', 'IT SUPPLIES'],
     'VICTA': ['760.6500.00', 'IT SUPPLIES'],
+    'STAPLES': ['760.6500.00', 'IT SUPPLIES'],
     'MSFT': ['760.7100.00', 'SOFTWARE'],
     'MICROSOFT': ['760.7100.00', 'SOFTWARE'],
     'UPLOADFILES.IO': ['760.7100.00', 'SOFTWARE'],
@@ -42,6 +43,8 @@ DicOfGLs = {
     '2CO.COM': ['760.7100.00', 'SOFTWARE'],
     'TRELLO.COM': ['760.7100.00', 'SOFTWARE'],
     'SYNC.COM': ['760.7100.00', 'SOFTWARE'],
+    'LOGMEIN': ['760.7100.00', 'SOFTWARE'],
+    'AIR LABS': ['760.7100.00', 'SOFTWARE'],
     'LSPACE.COM': ['760.5522.00', 'IT OTHER'],
     'AT&T': ['760.4530.00', 'TELEPHONE IT'],
     '8X8': ['450.4530.00', 'TELEPHONE DIST.'],
@@ -53,6 +56,7 @@ DicOfGLs = {
     'SHOPIFY': ['850.5524.03','ECOM WEB'],
     'HOTJAR SWIEQI': ['850.5524.03','ECOM WEB'],
     'ZONOS': ['850.5524.03','ECOM WEB'],
+    'SHIPSI': ['850.5524.03','ECOM WEB'],
     'WAHOO\'S FISH TACOS': ['760.4500.00','MEALS & ENTERTAINMENT'],
     'IN N OUT BURGER': ['760.4500.00','MEALS & ENTERTAINMENT'],
     'SQ *THE BURNT GROUP': ['760.4500.00','MEALS & ENTERTAINMENT'],
@@ -71,7 +75,7 @@ SpecialMerchants = [
     'WALMART'
     ]
 
-def LookForGLCode(line: list) -> bool:
+def LookForGLCode(line, csvWriter) -> bool:
     for key in DicOfGLs:
         if key.upper() in line[2].upper():
             line.append(DicOfGLs[key][0])
@@ -80,39 +84,40 @@ def LookForGLCode(line: list) -> bool:
             csvWriter.writerow(line)
             return True
     return False
-
-def IterateThroughCSV(csvReader,csvWriter):
-    for line in csvReader:
-            if LookForGLCode(line) == False:
-                line[1] = line[1].replace('-', '')
-                csvWriter.writerow(line)
-            else:
-                pass
-
-def OpenFile():
-    with open('expensereport.csv', mode = 'r') as csvFile:
+# Works but need to add condition for returns 
+def IterateThroughCSV() -> None:
+    with open(r'C:\Users\ryan.duong\Downloads\Expense_Report.csv', mode = 'r') as csvFile:
         csvReader = csv.reader(csvFile)
+        with open(r'C:\Users\ryan.duong\Downloads\Finished_Expense_Report.csv', mode = 'w', newline = '') as csvFile2:
+            csvWriter = csv.writer(csvFile2)
+            for line in csvReader:
+                if LookForGLCode(line, csvWriter) == False:
+                    if '-' in line[1]:
+                        line[1] = line[1].replace('-', '')
+                    else:
+                        line[1] = '-' + line[1]
+                        csvWriter.writerow(line)
+                else:
+                    pass
+  
+IterateThroughCSV()               
 
-def WriteToFile():
-    with open('expensereport2.csv', mode = 'w', newline = '') as csvFile2:
-        csvWriter = csv.writer(csvFile2, delimiter = ',')
 
-def clicked():
-    lbl.configure(text = 'Please enter the file path')
-    txt = Entry(window,width=10)
-    txt.grid(column=1, row=0)
 
-#
-window = Tk()
-window.title('Expense Report Automation')
-window.geometry('1920x1080')
-lbl = Label(window, text = 'Welcome To My Automater For Your Expense Report', font = ('Arial Bold', 15))
-lbl.grid(column = 0, row = 0)
-#
 
-btn = Button(window, text = 'Click Me', command = clicked)
-btn.grid(column = 2, row = 1)
+#root = tk.Tk()
 
-window.mainloop()
+#AlgoObj = ExpenseAlgo()
+
+#canvas = tk.Canvas(root, height = 700, width= 1000, bg = '#23272a')
+#canvas.pack()
+#frame = tk.Frame(root, bg = '#99aab5')
+#frame.place(relwidth = 0.8, relheight = 0.8, relx = .1, rely = .1)
+#openFileButton = tk.Button(root, text = "Open File", padx = 10, pady = 5, fg = '#99aab5', bg = '#23272a', command = AlgoObj.GetFileDirectory)
+#openFileButton.pack()
+#RunAlgo = tk.Button(root, text = "Run", padx = 10, pady = 5, fg = '#99aab5', bg = '#23272a', command = AlgoObj.IterateThroughCSV)
+#RunAlgo.pack()
+
+#root.mainloop()
 
         
